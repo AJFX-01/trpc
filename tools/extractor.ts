@@ -1,4 +1,4 @@
-import { AnyProcedure, AnyRouter, ProcedureRecord, RouterRe } from '@trpc/server';
+import { AnyProcedure, AnyRouter, ProcedureRecord } from '@trpc/server';
 import { z } from 'zod';
 
 interface RouteInfo {

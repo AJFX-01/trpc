@@ -1,26 +1,31 @@
 import { AnyRouter } from '@trpc/server';
 import { ZodTypeAny } from 'zod';
 
-type ExtractedRoute = {
+interface RouteInfo {
   path: string;
-  input: ZodTypeAny | null;
-  output: ZodTypeAny | null;
-};
+  input?: ZodTypeAny;
+  output?: ZodTypeAny;
+}
 
-type ExtractedRouter = {
-  routes: ExtractedRoute[];
-};
+interface ExtractedRouter {
+  routes: RouteInfo[];  // Array of routes
+  routeMap: Record<string, RouteInfo>;  // Record (map) of routes for direct lookup
+}
+
 
 export function extractRouter<TRouter extends AnyRouter>(router: TRouter): ExtractedRouter {
-  const routes: ExtractedRoute[] = [];
+  const routes: RouteInfo[] = [];
+  const routeMap: Record<string, RouteInfo> = {};
 
   function extractRoutes(currentRouter: AnyRouter, prefix: string = '') {
     for (const [key, procedure] of Object.entries(currentRouter._def.procedures)) {
       const path = `${prefix}${key}`;
-      const input = (procedure._def.inputs?.[0] as ZodTypeAny) || null;
-      const output = procedure._def.output as ZodTypeAny;
+      const input = procedure._def.inputs?.[0] as ZodTypeAny || null;
+      const output = procedure._def.output as ZodTypeAny || null;
 
-      routes.push({ path, input, output });
+      const routeInfo: RouteInfo = { path, input, output };
+      routes.push(routeInfo);
+      routeMap[path] = routeInfo;
     }
 
     for (const [key, nestedRouter] of Object.entries(currentRouter._def.record)) {
@@ -32,18 +37,5 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
 
   extractRoutes(router);
 
-  return { routes };
-}
-
-export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
-  const extracted = extractRouter(router);
-  return JSON.stringify(extracted, (key, value) => {
-    if (value instanceof ZodTypeAny) {
-      return {
-        type: 'zod',
-        schema: value.describe(),
-      };
-    }
-    return value;
-  }, 2);
+  return { routes, routeMap };
 }

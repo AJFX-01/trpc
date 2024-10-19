@@ -43,7 +43,6 @@ class TrpcGenerator extends Generator {
       return output.toString();
 
     } catch (e) {
-      log.warning('Error during TRPC generation: $e');
       rethrow; // You can decide how to handle this in your environment
     }
   }

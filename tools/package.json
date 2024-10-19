@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "extract": "ts-node extractor.ts",
+    "start": "ts-node-dev --respawn src/generateRouterJson.ts",
+    "build": "tsc",
+    "lint": "tslint --project tsconfig.json",
+    "format": "prettier --write src/**/*.{ts,tsx}",
+    "precommit": "lint-staged",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

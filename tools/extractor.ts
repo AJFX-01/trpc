@@ -55,7 +55,7 @@ export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string
     if (value instanceof z.ZodType) {
       return {
         type: 'zod',
-        schema: value.describe(key),  // Use Zod's describe method for better clarity.
+        schema: value.describe  // Use Zod's describe method for better clarity.
       };
     }
     return value;  // Return non-Zod values as-is.

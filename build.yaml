@@ -1,0 +1,16 @@
+targets:
+  $default:
+    builders:
+      trpc_generator:
+        enabled: true
+        generate_for:
+          - lib/trpc_routes.dart
+
+builders:
+  trpc_generator:
+    import: "package:your_package/trpc_generator.dart"
+    builder_factories: ["trpcGenerator"]
+    build_extensions: {".dart": [".trpc.dart"]}
+    auto_apply: dependents
+    build_to: source
+    applies_builders: ["source_gen|combining_builder"]

@@ -2,14 +2,15 @@ targets:
   $default:
     builders:
       trpc_generator:
-        enabled: true
+        options:
+          defaultJsonFilePath: "lib/generated/trpc_routes.json"  # fallback option
         generate_for:
           - lib/trpc_routes.dart
 
 builders:
   trpc_generator:
     import: "package:trpc_client/trpc_generator.dart"
-    builder_factories: ["trpcGenerator"]
+    builder_factories: ["trpcGeneratorBuilder"]
     build_extensions: {".dart": [".trpc.dart"]}
     auto_apply: dependents
     build_to: source

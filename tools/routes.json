@@ -1,0 +1,104 @@
+{
+  "getUser": {
+    "path": "getUser",
+    "input": {
+      "type": "zod",
+      "schema": {
+        "$ref": "#/definitions/mySchema",
+        "definitions": {
+          "mySchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false,
+            "description": "my new test subject"
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    "output": {
+      "type": "zod",
+      "schema": {
+        "$ref": "#/definitions/mySchema",
+        "definitions": {
+          "mySchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "email"
+            ],
+            "additionalProperties": false,
+            "description": "my new test subject"
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  },
+  "createUser": {
+    "path": "createUser",
+    "input": {
+      "type": "zod",
+      "schema": {
+        "$ref": "#/definitions/mySchema",
+        "definitions": {
+          "mySchema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "email"
+            ],
+            "additionalProperties": false,
+            "description": "my new test subject"
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    },
+    "output": {
+      "type": "zod",
+      "schema": {
+        "$ref": "#/definitions/mySchema",
+        "definitions": {
+          "mySchema": {
+            "type": "object",
+            "properties": {
+              "success": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "success"
+            ],
+            "additionalProperties": false,
+            "description": "my new test subject"
+          }
+        },
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      }
+    }
+  }
+}

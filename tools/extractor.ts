@@ -1,4 +1,5 @@
 import { AnyProcedure, AnyRouter, ProcedureRecord } from '@trpc/server';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import { z } from 'zod';
 
 // RouteInfo defines the structure of each route's data.
@@ -46,6 +47,54 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
   return { routeMap };
 }
 
+
+// function zodToJson(zodType: z.ZodTypeAny): any {
+//   const schema: any = {
+//     type: zodType._def.typeName, // Get the type of Zod schema (e.g., 'ZodString', 'ZodObject', etc.)
+//   };
+
+//   if (zodType instanceof z.ZodObject) {
+//     schema.shape = {};
+//     for (const key in zodType.shape) {
+//       schema.shape[key] = zodToJson(zodType.shape[key]);
+//     }
+//   } else if (zodType instanceof z.ZodArray) {
+//     schema.element = zodToJson(zodType.element);
+//   } else if (zodType instanceof z.ZodUnion) {
+//     schema.options = zodType.options.map(zodToJson);
+//   } else if (zodType instanceof z.ZodIntersection) {
+//     schema.left = zodToJson(zodType._def.left);
+//     schema.right = zodToJson(zodType._def.right);
+//   } else if (zodType instanceof z.ZodNullable) {
+//     schema.inner = zodToJson(zodType.innerType);
+//   } else if (zodType instanceof z.ZodLiteral) {
+//     schema.value = zodType.value; // Handle literal types
+//   } else if (zodType instanceof z.ZodEnum) {
+//     schema.values = zodType.Values; // Handle enum types
+//   } else if (zodType instanceof z.ZodTuple) {
+//     schema.items = zodType.items.map(zodToJson); // Handle tuple types
+//   } else if (zodType instanceof z.ZodDiscriminatedUnion) {
+//     schema.options = zodType._def.options.map(zodToJson); // Handle discriminated unions
+//     schema.discriminator = zodType._def.discriminator; // Discriminator field
+//   } else if (zodType instanceof z.ZodEffects) {
+//     schema.inner = zodToJson(zodType._def.schema); // Handle effects (transformations, refinements, etc.)
+//   } else if (zodType instanceof z.ZodRecord) {
+//     schema.key = zodToJson(zodType.keyType); // Handle records (key-value pairs)
+//     schema.value = zodToJson(zodType.valueType);
+//   } else if (zodType instanceof z.ZodMap) {
+//     schema.key = zodToJson(zodType.keyType); // Handle Maps
+//     schema.value = zodToJson(zodType.valueType);
+//   } else if (zodType instanceof z.ZodSet) {
+//     schema.element = zodToJson(zodType.valueType); // Handle Sets
+//   } else {
+//     // Handle other Zod types as necessary
+//     schema.description = zodType.description; // Add description if available
+//   }
+
+//   return schema;
+// }
+
+
 // Function to generate the route data as a JSON string in the 'map' format.
 export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
   const extracted = extractRouter(router);  // Extract routes.
@@ -55,7 +104,7 @@ export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string
     if (value instanceof z.ZodType) {
       return {
         type: 'zod',
-        schema: value.describe  // Use Zod's describe method for better clarity.
+        schema: zodToJsonSchema(value.describe("my new test subject"), "mySchema") // Use Zod's describe method for better clarity.
       };
     }
     return value;  // Return non-Zod values as-is.

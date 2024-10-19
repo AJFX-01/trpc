@@ -8,7 +8,7 @@ targets:
 
 builders:
   trpc_generator:
-    import: "package:your_package/trpc_generator.dart"
+    import: "package:trpc_client/trpc_generator.dart"
     builder_factories: ["trpcGenerator"]
     build_extensions: {".dart": [".trpc.dart"]}
     auto_apply: dependents

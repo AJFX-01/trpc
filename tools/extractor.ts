@@ -120,17 +120,27 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
 
 
 // Function to generate the route data as a JSON string in the 'map' format.
-export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
-  const extracted = extractRouter(router);  // Extract routes.
+// export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
+//   const extracted = extractRouter(router);  // Extract routes.
 
-  return JSON.stringify(extracted.routeMap, (key, value) => {
-    // Handle ZodType instances, formatting them with `describe`.
-    if (value instanceof z.ZodType) {
-      return {
-        type: 'zod',
-        schema: zodToJsonSchema(value.describe("my new test subject"), "mySchema") // Use Zod's describe method for better clarity.
-      };
-    }
-    return value;  // Return non-Zod values as-is.
-  }, 2);  // Pretty-print the JSON with 2 spaces of indentation.
+//   return JSON.stringify(extracted.routeMap, (key, value) => {
+//     // Handle ZodType instances, formatting them with `describe`.
+//     if (value instanceof z.ZodType) {
+//       return {
+//         type: 'zod',
+//         schema: zodToJsonSchema(value.describe("my new test subject"), "mySchema") // Use Zod's describe method for better clarity.
+//       };
+//     }
+//     return value;  // Return non-Zod values as-is.
+//   }, 2);  // Pretty-print the JSON with 2 spaces of indentation.
+// }
+
+export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
+  const extracted = extractRouter(router);
+
+  return JSON.stringify({
+    routeMap: extracted.routeMap,
+    definitions: extracted.definitions,
+    $schema: "http://json-schema.org/draft-07/schema#", // Keep schema version
+  }, null, 2);
 }

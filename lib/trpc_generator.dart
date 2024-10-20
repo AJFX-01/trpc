@@ -5,8 +5,12 @@ import 'package:source_gen/source_gen.dart';
 
 class TrpcGenerator extends Generator {
   final String jsonFilePath;
+  final String outputDir;
 
-  TrpcGenerator({required this.jsonFilePath});
+  TrpcGenerator({
+    required this.jsonFilePath,
+    required this.outputDir
+  });
 
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
@@ -15,6 +19,7 @@ class TrpcGenerator extends Generator {
     try {
       if (!jsonFile.existsSync()) {
         throw FileSystemException('File not found', jsonFilePath);
+        
       }
 
       final jsonString = jsonFile.readAsStringSync();
@@ -39,6 +44,9 @@ class TrpcGenerator extends Generator {
       }
 
       _generateTrpcRouterClass(routerData['routes'], output);
+
+      final outputFile = File('$outputDir/trpc_routes.dart');
+      outputFile.writeAsStringSync(output.toString());
 
       return output.toString();
 

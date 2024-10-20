@@ -7,24 +7,20 @@ class TrpcGenerator extends Generator {
   final String jsonFilePath;
   final String outputDir;
 
-  TrpcGenerator({
-    required this.jsonFilePath,
-    required this.outputDir
-  });
+  TrpcGenerator({required this.jsonFilePath, required this.outputDir});
 
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
     final jsonFile = File(jsonFilePath);
-
+    
     try {
       if (!jsonFile.existsSync()) {
         throw FileSystemException('File not found', jsonFilePath);
-        
       }
 
       final jsonString = jsonFile.readAsStringSync();
       final Map<String, dynamic> routerData = json.decode(jsonString);
-
+      print(routerData.toString());
       // Validate the router data structure before proceeding
       validateRouterData(routerData);
 
@@ -49,7 +45,6 @@ class TrpcGenerator extends Generator {
       outputFile.writeAsStringSync(output.toString());
 
       return output.toString();
-
     } catch (e) {
       rethrow; // You can decide how to handle this in your environment
     }
@@ -58,20 +53,24 @@ class TrpcGenerator extends Generator {
   // Helper method to validate router data
   bool validateRouterData(Map<String, dynamic> routerData) {
     if (!routerData.containsKey('routes') || routerData['routes'] is! List) {
-      throw FormatException('Invalid router data: Missing or incorrect "routes" key.');
+      throw FormatException(
+          'Invalid router data: Missing or incorrect "routes" key.');
     }
     return true;
   }
 
   // Generate Freezed class based on schema
-  void _generateFreezedClass(String className, Map<String, dynamic>? schema, StringBuffer output) {
+  void _generateFreezedClass(
+      String className, Map<String, dynamic>? schema, StringBuffer output) {
     if (schema != null) {
       output.writeln("@freezed");
       output.writeln("class $className with _\$$className {");
       output.writeln("  factory $className({");
       _generateSchemaFields(schema['schema'], output);
       output.writeln("  }) = _$className;");
-      output.writeln("  factory $className.fromJson(Map<String, dynamic> json) => _\$$className" "FromJson(json);");
+      output.writeln(
+          "  factory $className.fromJson(Map<String, dynamic> json) => _\$$className"
+          "FromJson(json);");
       output.writeln("}");
       output.writeln();
     }
@@ -109,8 +108,9 @@ class TrpcGenerator extends Generator {
 
   // Generate header part of the file
   void _generateHeader(StringBuffer output) {
-    output.writeln("import 'package:freezed_annotation/freezed_annotation.dart';");
-    output.writeln("import 'package:trpc_dart/trpc_dart.dart';");
+    output.writeln(
+        "import 'package:freezed_annotation/freezed_annotation.dart';");
+    output.writeln("import 'package:trpc_client.dart/trpc_dart.dart';");
     output.writeln();
     output.writeln("part 'trpc_routes.freezed.dart';");
     output.writeln("part 'trpc_routes.g.dart';");
@@ -124,9 +124,11 @@ class TrpcGenerator extends Generator {
     for (var route in routes) {
       final routeName = route['path'].replaceAll('.', '_');
       final inputType = route['input'] != null ? "${routeName}Input" : "void";
-      final outputType = route['output'] != null ? "${routeName}Output" : "void";
+      final outputType =
+          route['output'] != null ? "${routeName}Output" : "void";
 
-      output.writeln("  Future<$outputType> $routeName($inputType input) async {");
+      output.writeln(
+          "  Future<$outputType> $routeName($inputType input) async {");
       output.writeln("    // Implement the actual TRPC call here");
       output.writeln("    throw UnimplementedError();");
       output.writeln("  }");

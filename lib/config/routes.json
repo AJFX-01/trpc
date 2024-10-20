@@ -1,0 +1,22 @@
+{
+  "routes": [
+    {
+      "path": "exampleRoute",
+      "input": {
+        "schema": {
+          "shape": {
+            "field1": { "type": "string" },
+            "field2": { "type": "number" }
+          }
+        }
+      },
+      "output": {
+        "schema": {
+          "shape": {
+            "result": { "type": "string" }
+          }
+        }
+      }
+    }
+  ]
+}

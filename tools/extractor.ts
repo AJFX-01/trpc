@@ -12,12 +12,24 @@ interface RouteInfo {
 // ExtractedRouter contains the route map for easy lookup.
 interface ExtractedRouter {
   routeMap: Record<string, RouteInfo>;
+  definitions: Record<string, any>;
 }
 
 // Function to extract routes from a TRPC router.
 export function extractRouter<TRouter extends AnyRouter>(router: TRouter): ExtractedRouter {
   const routeMap: Record<string, RouteInfo> = {};  // The route map to be returned.
+  const definitions: Record<string, any> = {};
 
+  // Extracting definitions from the router.
+  function getSchemaDefinition(zodType: z.ZodTypeAny, name: string) : any {
+      if (definitions[name]) {
+        return { "$ref": `#/definitions/${name}` }; // Reference existing definition
+      }
+      const schema = zodToJsonSchema(zodType); // Convert Zod type to JSON schema
+      definitions[name] = schema; // Store the definition
+      return schema;
+  }
+  
   // Recursive helper function to traverse routers and extract route information.
   function extractRoutes(currentRouter: AnyRouter, prefix: string = '') {
     const procedures = currentRouter._def.procedures as ProcedureRecord;  // Extracting procedures.
@@ -29,8 +41,20 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
       const input = procedure._def.inputs?.[0] as z.ZodTypeAny || null;  // Input schema or null.
       const output = procedure._def.output as z.ZodTypeAny || null;  // Output schema or null.
 
+      // Use descriptive names for schemas
+      const inputSchemaName = `${key}InputSchema`;
+      const outputSchemaName = `${key}OutputSchema`;
+
       // Add the route to the map.
       routeMap[path] = { path, input, output };
+
+      if (input) {
+        routeMap[path].input = getSchemaDefinition(input, inputSchemaName);
+      }
+      if (output) {
+        routeMap[path].output = getSchemaDefinition(output, outputSchemaName);
+      }
+
     }
 
     // Recursively handle any nested routers.
@@ -44,7 +68,7 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
   // Start the extraction from the root router.
   extractRoutes(router);
 
-  return { routeMap };
+  return { routeMap, definitions };
 }
 
 

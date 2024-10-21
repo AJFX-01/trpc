@@ -1,7 +1,3 @@
-Here’s a clean and well-structured README to guide users through configuring and using the Dart and TypeScript parts of your project:
-
----
-
 # TRPC Code Generator for Dart and TypeScript
 
 This project provides a TRPC code generator for Dart, designed to dynamically map TRPC routes from TypeScript to Dart using Freezed classes. The tool reads a JSON file that describes your routes and generates Dart classes accordingly.

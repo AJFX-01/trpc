@@ -183,7 +183,8 @@ the json file from trpc router.
 
 2. **Run the Dart code generator**:
 
-Before runing the code generator, first clear your build cache in the root folder
+Before runing the code generator, first clear your build cache in the root folder, also delete the already generated files
+in the `lib/generated` folder and also the `trpc_routes.g.dart` and `trpc_routes.trpcGeneratorBuilder.g.part` in the `lib/`
 
 ```bash
 dart run build_runner clean

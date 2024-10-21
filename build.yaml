@@ -4,8 +4,9 @@ targets:
       trpc_client|trpcGeneratorBuilder:
         options:
           output_dir: lib/generated/
-          input_json_path: lib/config/routes4.json
+          input_json_path: lib/config/routes.json
           defaultJsonFilePath: "lib/generated/trpc_routes.json"  # fallback option
+          mainkey: "routeMap" # set the key for the map list entry
         generate_for:
           - lib/trpc_routes.dart
         enabled: True

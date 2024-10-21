@@ -1,31 +1,36 @@
 import { generateJSON } from './extractor'; // Adjust this to the path where your extraction code is located
 import * as fs from 'fs';
 import * as readlineSync from 'readline-sync';
-import { myRouter } from './router'; // Adjust the path to your router
 
-// const jsonOutput = generateJSON(myRouter, "routes");
-// fs.writeFileSync('./routes.json', jsonOutput);
-
-
-// Function to get user input for file name and key
+// Function to get user input for file name, key, and router
 function promptForDetails() {
-    const fileName : string = readlineSync.question('Enter the name for the JSON file (without extension): ');
-    const key : string = readlineSync.question('Enter the key you want to use in the JSON, this will be main key of list of maps: ');
+    console.log("Note: The router file must be located in the root folder.");
+    
+    const routerName: string = readlineSync.question('Enter the name of the router file (without extension, from the root folder): ');
+    const fileName: string = readlineSync.question('Enter the name for the JSON file (without extension): ');
+    const key: string = readlineSync.question('Enter the key you want to use in the JSON (main key of list of maps): ');
 
-    return { fileName, key };
+    return { routerName, fileName, key };
 }
 
-function main() {
-// Prompt the user for file name and key
-    const { fileName, key } = promptForDetails();
+async function main() {
+    try {
+        // Prompt the user for router file name, file name, and key
+        const { routerName, fileName, key } = promptForDetails();
 
-    // Generate the JSON string dynamically using the provided key
-    const jsonOutput = generateJSON(myRouter, key);
+        // Dynamically import the router based on user input from the root folder
+        const { myRouter } = await import(`./${routerName}`);
 
-    // Write the JSON to the specified file
-    fs.writeFileSync(`./${fileName}.json`, jsonOutput);
+        // Generate the JSON string dynamically using the provided key
+        const jsonOutput = generateJSON(myRouter, key);
 
-    console.log(`JSON saved to ./${fileName}.json`);
+        // Write the JSON to the specified file
+        fs.writeFileSync(`./${fileName}.json`, jsonOutput);
+
+        console.log(`JSON saved to ./${fileName}.json`);
+    } catch (error: any) {
+        console.error('Error:', error.message);
+    }
 }
 
 // Execute the main function

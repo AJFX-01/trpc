@@ -40,6 +40,13 @@ This project consists of two main parts:
 
 ### TypeScript Part
 
+Open the tools directory from the root folder
+
+
+```bash
+cd tools
+```
+
 Install the required npm packages:
 
 ```bash
@@ -176,7 +183,7 @@ the json file from trpc router.
 
 2. **Run the Dart code generator**:
 
-Before runing the code generator, first clear your build cache
+Before runing the code generator, first clear your build cache in the root folder
 
 ```bash
 dart run build_runner clean

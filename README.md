@@ -176,6 +176,13 @@ the json file from trpc router.
 
 2. **Run the Dart code generator**:
 
+Before runing the code generator, first clear your build cache
+
+```bash
+dart run build_runner clean
+```
+then run the build runner
+
 ```bash
 dart run build_runner watch --delete-conflicting-outputs
 ```

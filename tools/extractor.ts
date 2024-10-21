@@ -139,8 +139,6 @@ export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string
   const extracted = extractRouter(router);
 
   return JSON.stringify({
-    routeMap: extracted.routeMap,
-    definitions: extracted.definitions,
-    $schema: "http://json-schema.org/draft-07/schema#", // Keep schema version
+    routeMap: [extracted.routeMap], // Keep schema version
   }, null, 2);
 }

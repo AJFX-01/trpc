@@ -3,4 +3,4 @@ import * as fs from 'fs';
 import { myRouter } from './router'; // Adjust the path to your router
 
 const jsonOutput = generateJSON(myRouter);
-fs.writeFileSync('./routes.json', jsonOutput);
+fs.writeFileSync('./routes4.json', jsonOutput);

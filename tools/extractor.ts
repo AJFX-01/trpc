@@ -137,8 +137,8 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
 
 export function generateJSON<TRouter extends AnyRouter>(router: TRouter, mapKey: string): string {
   const extracted = extractRouter(router);
-
+  
   return JSON.stringify({
-    mapKey : [extracted.routeMap], // Keep schema version
+    [mapKey] : [extracted.routeMap], // Keep schema version
   }, null, 2);
 }

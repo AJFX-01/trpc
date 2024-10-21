@@ -7,7 +7,6 @@ part of 'trpc_routes.dart';
 // **************************************************************************
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'trpc_routes.freezed.dart';
 part 'trpc_routes.g.dart';
@@ -51,12 +50,12 @@ class CreateUserOutput with _$CreateUserOutput {
 }
 
 class TrpcRouter {
-  Future<getUserOutput> getUser(getUserInput input) async {
+  Future<GetUserOutput> getUser(GetUserInput input) async {
     // Implement the actual TRPC call here
     throw UnimplementedError();
   }
 
-  Future<createUserOutput> createUser(createUserInput input) async {
+  Future<CreateUserOutput> createUser(CreateUserInput input) async {
     // Implement the actual TRPC call here
     throw UnimplementedError();
   }

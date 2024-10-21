@@ -135,10 +135,10 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
 //   }, 2);  // Pretty-print the JSON with 2 spaces of indentation.
 // }
 
-export function generateJSON<TRouter extends AnyRouter>(router: TRouter): string {
+export function generateJSON<TRouter extends AnyRouter>(router: TRouter, mapKey: string): string {
   const extracted = extractRouter(router);
 
   return JSON.stringify({
-    routeMap: [extracted.routeMap], // Keep schema version
+    mapKey : [extracted.routeMap], // Keep schema version
   }, null, 2);
 }

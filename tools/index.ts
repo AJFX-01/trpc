@@ -2,5 +2,5 @@ import { generateJSON } from './extractor'; // Adjust this to the path where you
 import * as fs from 'fs';
 import { myRouter } from './router'; // Adjust the path to your router
 
-const jsonOutput = generateJSON(myRouter);
-fs.writeFileSync('./routes4.json', jsonOutput);
+const jsonOutput = generateJSON(myRouter, "routes");
+fs.writeFileSync('./routes.json', jsonOutput);

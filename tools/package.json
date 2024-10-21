@@ -2,9 +2,9 @@
   "name": "tools",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "ts-node-dev --respawn src/generateRouterJson.ts",
+    "start": "ts-node-dev --respawn index.ts",
     "build": "tsc",
     "lint": "tslint --project tsconfig.json",
     "format": "prettier --write src/**/*.{ts,tsx}",

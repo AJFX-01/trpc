@@ -296,7 +296,6 @@ class TrpcGenerator extends Generator {
   // Generate header for the output file
   void _generateHeader(StringBuffer output) {
     output.writeln("import 'package:freezed_annotation/freezed_annotation.dart';");
-    output.writeln("import 'package:json_annotation/json_annotation.dart';");
     output.writeln();
     output.writeln("part 'trpc_routes.freezed.dart';");
     output.writeln("part 'trpc_routes.g.dart';");
@@ -313,7 +312,7 @@ class TrpcGenerator extends Generator {
         final inputType = route.containsKey('input') ? "$classPrefix${routeName}Input" : "void";
         final outputType = route.containsKey('output') ? "$classPrefix${routeName}Output" : "void";
 
-        output.writeln("${indentation}Future<$outputType> $routeName($inputType input) async {");
+        output.writeln("${indentation}Future<${capitalizeFirstLetter(outputType)}> $routeName(${capitalizeFirstLetter(inputType)} input) async {");
         output.writeln("${indentation * 2}// Implement the actual TRPC call here");
         output.writeln("${indentation * 2}throw UnimplementedError();");
         output.writeln("$indentation}");

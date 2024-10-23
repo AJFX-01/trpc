@@ -1,9 +1,9 @@
 
-// import { initTRPC } from '@trpc/server';
-// import { z } from 'zod';
+import { initTRPC } from '@trpc/server';
+import { z } from 'zod';
 
-// // Initialize tRPC
-// const t = initTRPC.create();
+// Initialize tRPC
+const t = initTRPC.create();
 
 // Define the Zod schemas for input and output.
 // const GetUserInputSchema = z.object({
@@ -46,36 +46,50 @@
 //     }),
 // });
 
-import { initTRPC } from '@trpc/server';
-import { z } from 'zod';  // Zod for input validation
+// import { initTRPC } from '@trpc/server';
+// import { z } from 'zod';  // Zod for input validation
 
-// Initialize the TRPC instance
-const t = initTRPC.create();
+// // Initialize the TRPC instance
+// const t = initTRPC.create();
 
-// Create the procedure types
-const publicProcedure = t.procedure;
+// // Create the procedure types
+// const publicProcedure = t.procedure;
 
-// Define the userRouter with query and mutation
-const userRouter = t.router({
-  getUser: publicProcedure.input(z.string()).query(({ input }) => {
-    // Simulate fetching user data based on the input (user ID)
-    return { id: input, name: 'John Doe' };
-  }),
-  updateUser: publicProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))  // Expecting an object with id and name
-    .mutation(({ input }) => {
-      // Simulate updating user data
-      return { success: true };
-    }),
-});
+// // Define the userRouter with query and mutation
+// const userRouter = t.router({
+//   getUser: publicProcedure.input(z.string()).query(({ input }) => {
+//     // Simulate fetching user data based on the input (user ID)
+//     return { id: input, name: 'John Doe' };
+//   }),
+//   updateUser: publicProcedure
+//     .input(z.object({ id: z.string(), name: z.string() }))  // Expecting an object with id and name
+//     .mutation(({ input }) => {
+//       // Simulate updating user data
+//       return { success: true };
+//     }),
+// });
 
-// Define the appRouter with a nested userRouter and a simple status query
-export const myRouter = t.router({
-  user: userRouter,  // Nest the userRouter
-  getStatus: publicProcedure.query(() => 'OK'),  // Simple status check
-});
+// // Define the appRouter with a nested userRouter and a simple status query
+// export const myRouter = t.router({
+//   user: userRouter,  // Nest the userRouter
+//   getStatus: publicProcedure.query(() => 'OK'),  // Simple status check
+// });
 
 // Export the type of the appRouter for use in your TRPC client
 // export type AppRouter = typeof myRouter;
 
 
+export const myRouter = t.router({
+  // Greeting procedure
+  greeting: t.procedure
+  .input (
+  z.object ({
+  name: z.string(),
+  })
+  )
+  .output (z.string ())
+  .query (({ input }) => 'Hello, ${input .name)!'),
+  deep: t.router ({
+  test: t.procedure.query (() => "Hello, nested!"),
+    }),
+  });

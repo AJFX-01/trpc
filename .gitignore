@@ -10,3 +10,5 @@ pubspec.lock
 # Avoid commiting the noe modules to the repository
 
 node_modules
+
+.DS_Store

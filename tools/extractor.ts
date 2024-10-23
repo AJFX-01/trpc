@@ -5,6 +5,7 @@ import { z } from 'zod';
 // RouteInfo defines the structure of each route's data.
 interface RouteInfo {
   path: string;
+  type: 'query' | 'mutation';
   input?: z.ZodTypeAny;
   output?: z.ZodTypeAny;
 }
@@ -13,6 +14,11 @@ interface RouteInfo {
 interface ExtractedRouter {
   routeMap: Record<string, RouteInfo>;
   definitions: Record<string, any>;
+}
+
+// Utility function to check if an object is a TRPC router
+function isRouter(obj: any): obj is AnyRouter {
+  return obj && obj._def && obj._def.procedures !== undefined;
 }
 
 // Function to extract routes from a TRPC router.
@@ -41,12 +47,15 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
       const input = procedure._def.inputs?.[0] as z.ZodTypeAny || null;  // Input schema or null.
       const output = procedure._def.output as z.ZodTypeAny || null;  // Output schema or null.
 
+      // Determine if it's a query or mutation based on the procedure type
+      const routeType = procedure._def.query ? 'query' : 'mutation'
+
       // Use descriptive names for schemas
       const inputSchemaName = `${key}InputSchema`;
       const outputSchemaName = `${key}OutputSchema`;
 
       // Add the route to the map.
-      routeMap[path] = { path, input, output };
+      routeMap[path] = { path, type: routeType, input, output };
 
       if (input) {
         routeMap[path].input = getSchemaDefinition(input, inputSchemaName);
@@ -59,7 +68,7 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
 
     // Recursively handle any nested routers.
     for (const [key, nestedRouter] of Object.entries(record)) {
-      if ('router' in nestedRouter) {
+      if (isRouter(nestedRouter)) {
         extractRoutes(nestedRouter as AnyRouter, `${prefix}${key}.`);  // Traverse into nested routers.
       }
     }

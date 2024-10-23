@@ -27,7 +27,7 @@ async function main() {
         // Write the JSON to the specified file
         fs.writeFileSync(`./${fileName}.json`, jsonOutput);
 
-        console.log(`JSON saved to ./${fileName}.json`);
+        console.log(`JSON saved to ./outputs/${fileName}.json`);
     } catch (error: any) {
         console.error('Error:', error.message);
     }

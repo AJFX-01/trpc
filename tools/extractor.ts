@@ -23,17 +23,23 @@ function isRouter(obj: any): obj is AnyRouter {
 
 // Function to combine Zod schemas, handling only ZodObjects for merging.
 function mergeSchemas(schemas: z.ZodTypeAny[]): z.ZodTypeAny | null {
-  if (schemas.length === 0) return null; // No schemas to merge
+  if (!Array.isArray(schemas) || schemas.length === 0) {
+    return null;  // Handle cases where schemas are not an array or the array is empty.
+  }
+
   if (schemas.length === 1) return schemas[0];  // If there's only one, return it directly.
 
-  // Check if all schemas are ZodObjects, since only ZodObjects can be merged.
+  // Ensure that all schemas are ZodObjects before merging
   if (schemas.every(schema => schema instanceof z.ZodObject)) {
-    return schemas.reduce((combinedSchema, schema) => combinedSchema.merge(schema as z.ZodObject<any>));
+    return schemas.reduce(
+      (combinedSchema, schema) => (combinedSchema as z.ZodObject<any>).merge(schema as z.ZodObject<any>)
+    );
   } else {
     // Handle cases where schemas are not ZodObject (e.g., ZodString, ZodNumber).
     throw new Error('Cannot merge non-object schemas. Ensure all schemas are ZodObject.');
   }
 }
+
 
 
 // Function to extract routes from a TRPC router.

@@ -1,0 +1,27 @@
+{
+  "routeMap": [
+    {
+      "greeting": {
+        "path": "greeting",
+        "type": "query",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        }
+      },
+      "deep.test": {
+        "path": "deep.test",
+        "type": "query"
+      }
+    }
+  ]
+}

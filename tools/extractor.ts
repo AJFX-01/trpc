@@ -21,6 +21,21 @@ function isRouter(obj: any): obj is AnyRouter {
   return obj && obj._def && obj._def.procedures !== undefined;
 }
 
+// Function to combine Zod schemas, handling only ZodObjects for merging.
+function mergeSchemas(schemas: z.ZodTypeAny[]): z.ZodTypeAny | null {
+  if (schemas.length === 0) return null; // No schemas to merge
+  if (schemas.length === 1) return schemas[0];  // If there's only one, return it directly.
+
+  // Check if all schemas are ZodObjects, since only ZodObjects can be merged.
+  if (schemas.every(schema => schema instanceof z.ZodObject)) {
+    return schemas.reduce((combinedSchema, schema) => combinedSchema.merge(schema as z.ZodObject<any>));
+  } else {
+    // Handle cases where schemas are not ZodObject (e.g., ZodString, ZodNumber).
+    throw new Error('Cannot merge non-object schemas. Ensure all schemas are ZodObject.');
+  }
+}
+
+
 // Function to extract routes from a TRPC router.
 export function extractRouter<TRouter extends AnyRouter>(router: TRouter): ExtractedRouter {
   const routeMap: Record<string, RouteInfo> = {};  // The route map to be returned.
@@ -44,26 +59,29 @@ export function extractRouter<TRouter extends AnyRouter>(router: TRouter): Extra
     // Loop over each procedure in the current router.
     for (const [key, procedure] of Object.entries(procedures)) {
       const path = `${prefix}${key}`;  // Create the full route path.
-      const input = procedure._def.inputs?.[0] as z.ZodTypeAny || null;  // Input schema or null.
-      const output = procedure._def.output as z.ZodTypeAny || null;  // Output schema or null.
+
+      // Handle the possibility of multiple input/output schemas
+      const inputSchemas = procedure._def.inputs as z.ZodTypeAny[] || null;  // Input schema or null.
+      const outputSchemas = procedure._def.output as z.ZodTypeAny[] || null;  // Output schema or null.
 
       // Determine if it's a query or mutation based on the procedure type
       const routeType = procedure._def.query ? 'query' : 'mutation'
+
+      const input = mergeSchemas(inputSchemas);  // Combine input schemas.
+      const output = mergeSchemas(outputSchemas);  // Combine output schemas.
 
       // Use descriptive names for schemas
       const inputSchemaName = `${key}InputSchema`;
       const outputSchemaName = `${key}OutputSchema`;
 
       // Add the route to the map.
-      routeMap[path] = { path, type: routeType, input, output };
-
-      if (input) {
-        routeMap[path].input = getSchemaDefinition(input, inputSchemaName);
-      }
-      if (output) {
-        routeMap[path].output = getSchemaDefinition(output, outputSchemaName);
-      }
-
+      routeMap[path] = { 
+        path,
+        type: routeType,
+        input : input ? getSchemaDefinition(input, inputSchemaName) : undefined,
+        output: output ? getSchemaDefinition(output, outputSchemaName) : undefined
+      };
+      
     }
 
     // Recursively handle any nested routers.
